@@ -1,0 +1,26 @@
+VIS_ACTIVO	.F.VIS_ALTER	.F.VIS_AUTO	.F.VIS_CODADD	STDVIS_DEFINE	SELECT                                                                    
+MOV_CODSUC AS DES_CODSUC,                                                                         
+MOV_CODIGO AS DES_CODIGO,                                                                          
+MOV_LOTE   AS DES_LOTE  ,                         
+SUM(IF(DOC_DESTIN="N" AND CLI_CODCLA<>"000002",MOV_PESO,0))  AS VTC_PESO,                                                                           
+SUM(IF(DOC_DESTIN="N" AND CLI_CODCLA="000002",MOV_PESO,0))  AS DCC_PESO,                                                                                    
+SUM(IF(DOC_DESTIN="N",MOV_PESO,0))  AS DES_PESO,                                                                          
+SUM(IF(LEFT(DOC_ESTADO,1)="O",MOV_PESO,0))  AS DES_PESOBS,                                      
+SUM(IF(DOC_DESTIN="M" OR MOV_TIPASO="NRM",MOV_PESO,0))  AS DES_PESMAQ,                                         
+SUM(IF(DOC_DESTIN="A"  ,MOV_PESO,0))     AS DES_PESALM,                                                                                  
+SUM(IF(MOV_TIPASO="FAV",MOV_EXPORT,0)) AS DES_PESFAC,                                                    
+SUM(MOV_MTOCOM) AS DES_MERMA,                                                                
+SUM(IF(MOV_TIPASO="FAV",MOV_MTOCLA,0)) AS DES_MTOFAC,                                                                                                  
+SUM(IF(MOV_TIPASO="NRC",MOV_MTOCLA,0)) AS DES_MTONRC,                                                                                                    
+SUM(IF(MOV_TIPASO="NRC",MOV_EXPORT,0)) AS DES_PESNRC,                                          
+SUM(IF(MOV_TIPASO="FAV",MOV_MTODIV,0)) AS DES_DIVFAC,                                                                                                  
+SUM(IF(MOV_TIPASO="NRC",MOV_MTODIV,0)) AS DES_DIVNRC,                                      
+AVG(IF(MOV_TIPASO="FAV",MOV_MTOCLA/MOV_EXPORT,0)) AS DES_PRECIO                                                                                                 
+FROM DPMOVINV                                                                           
+INNER JOIN DPDOCCLI   ON MOV_CODSUC=DOC_CODSUC AND MOV_TIPDOC=DOC_TIPDOC AND MOV_DOCUME=DOC_NUMERO AND DOC_TIPTRA="D" AND DOC_ACT=1                                                                        
+INNER JOIN DPCLIENTES ON CLI_CODIGO=DOC_CODIGO                                            
+INNER JOIN DPINV      ON MOV_CODIGO=INV_CODIGO                                                                          
+WHERE MOV_TIPDOC="NEN" AND MOV_LOTE<>"" AND MOV_INVACT=1                                                                         
+GROUP BY MOV_CODSUC,MOV_CODIGO,DES_LOTE                                                                  
+ORDER BY MOV_CODSUC,MOV_CODIGO,DES_LOTE
+VIS_DSN	<MULTIPLEVIS_FECHA	03/09/2020VIS_HORA	11:01:13VIS_INDICA	.F.VIS_NOMBRE	Notas de EntregaVIS_PRGPRE	DPMOVINVSETMOVPESOVIS_TABLA	.T.VIS_TABLE	DPMOVINVVIS_VISTA	AVINEN

@@ -1,0 +1,21 @@
+VIS_ACTIVO	.F.VIS_ALTER	.F.VIS_AUTO	.F.VIS_CODADD	STDVIS_DEFINE	SELECT                                        
+MOV_CODSUC AS DEC_CODSUC,                                             
+MOV_LOTE   AS DEC_LOTE,                          
+MOV_CODCTA AS DEC_CODCLI,                                              
+SUM(IF(DOC_DESTIN="N",MOV_PESO,0))  AS DEC_PESO,                                              
+SUM(IF(DOC_DESTIN="O",MOV_PESO,0))  AS DEC_PESOBS,                                            
+SUM(IF(MOV_TIPASO="FAV",MOV_EXPORT,0)) AS DEC_PESFAC,                
+SUM(MOV_MTOCOM) AS DEC_MERMA,                            
+SUM(IF(MOV_TIPASO="FAV",MOV_MTOCLA,0)) AS DEC_MTOFAC,                                                              
+SUM(IF(MOV_TIPASO="NRC",MOV_MTOCLA,0)) AS DEC_MTONRC,                                                                
+SUM(IF(MOV_TIPASO="NRC",MOV_EXPORT,0)) AS DEC_PESNRC,          
+SUM(IF(MOV_TIPASO="FAV",MOV_MTODIV,0)) AS DEC_DIVFAC,                                                                    
+SUM(IF(MOV_TIPASO="NRC",MOV_MTODIV,0)) AS DEC_DIVNRC,  
+AVG(IF(MOV_TIPASO="FAV",MOV_MTOCLA/MOV_EXPORT,0)) AS DEC_PRECIO                                                             
+                                                                
+FROM DPMOVINV                                               
+INNER JOIN DPDOCCLI ON MOV_CODSUC=DOC_CODSUC AND MOV_TIPDOC=DOC_TIPDOC AND MOV_DOCUME=DOC_NUMERO                                              
+WHERE MOV_TIPDOC="NEN" AND MOV_LOTE<>"" AND MOV_INVACT=1                                             
+GROUP BY MOV_CODSUC,MOV_CODCTA,DEC_LOTE                      
+ORDER BY MOV_CODSUC,MOV_CODCTA,DEC_LOTE
+VIS_DSN	<MULTIPLEVIS_FECHA	28/02/2020VIS_HORA	13:48:44VIS_INDICA	.F.VIS_NOMBRE	Notas de Entrega, LOTES x ClienteVIS_PRGPRE	DPMOVINVSETMOVPESOVIS_TABLA	.T.VIS_TABLE	DPMOVINVVIS_VISTA	AVINENCLI
